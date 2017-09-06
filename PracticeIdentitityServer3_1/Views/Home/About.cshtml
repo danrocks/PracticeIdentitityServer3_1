@@ -1,0 +1,15 @@
+﻿@model IEnumerable<System.Security.Claims.Claim>
+@*@{
+        ViewBag.Title = "About";
+    }
+    <h2>@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>*@
+
+<p>This page is only visible to those logging in through outh2 implicit flow</p>
+<dl>
+    @foreach (var claim in Model)
+    {
+        <dt>@claim.Type</dt>
+        <dd>@claim.Value</dd>
+    }
+    </dl>

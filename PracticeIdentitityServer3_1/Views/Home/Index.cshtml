@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div class="jumbotron">
+    <h1>Identity Server 3</h1>
+    <p class="lead">
+        Basic Identity Server 3 project - https://identityserver.github.io/Documentation/docsv2/overview/mvcGettingStarted.html
+    </p>
+    <p>This implements Implicit flow. We need:</p>
+    <ul>
+        <li>Clients (with Flow=Implicit, AllowAccessToAllScopes = true, RedirectUrls)</li>
+        <li>Scopes (OpenId, Profile, Email, Roles,  OfflineAccess)</li>
+        <li>Users (InMemory user - username, password, subject, claims)</li>
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+        You can navigate to the discovery endpoint
+        </p>
+        <p><a class="btn btn-default" href="https://localhost:44370/identity/.well-known/openid-configuration">https://localhost:44370/identity/.well-known/openid-configuration</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>RAMMFAR</h2>
+        <p>There are constant reminders to set-up RAMMFAR properly. If itsd not included lots of stuff goes tit up. e.g. IdentityServer has it's own
+        Login functionality - it won't work without RAMMFAR.
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>
