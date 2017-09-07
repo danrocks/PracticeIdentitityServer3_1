@@ -15,6 +15,7 @@ using System.Security.Claims;
 using IdentityServer3.Core;
 using Microsoft.Owin.Security;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Protocols;
 
 
 //[assembly: OwinStartup(typeof(PracticeIdentitityServer3_1.Startup))]
@@ -43,6 +44,17 @@ namespace PracticeIdentitityServer3_1
                                 .UseInMemoryClients(Clients.Get())
                                 .UseInMemoryScopes(Scopes.Get())
                 });
+
+                // if we wanted to allow access via a 3rd party id provider e.g google
+                // install install-package Microsoft.Owin.Security.Google
+                // we might put the google config code in a ConfigureIdentityProviders method
+                // and point to it from here:
+                //AuthenticationOptions = new IdentityServer3.Core.Configuration.AuthenticationOptions
+                //{
+                //    IdentityProviders = ConfigureIdentityProviders
+                //}
+                //I think the point here is google could provide authentication but other features
+                //of Identity Server 3 would handle authorization.
             });
 
             // Wire-up AuthorizationManager 
@@ -52,7 +64,6 @@ namespace PracticeIdentitityServer3_1
             // Authorize sets action result to 401, which triggers redirect to IdentityServer, which redirects users back to same place...
             // Work-around is to override (class)AuthorizeAttribute's HandleUnauthorizedRequest method.
             // to return 403 (we know who you are, but you haven't been granted access)
-
             app.UseResourceAuthorization(new AuthorizationManager());
 
             // set-up cookie middleware
@@ -71,9 +82,12 @@ namespace PracticeIdentitityServer3_1
             // data stores to retrieve more claims that are required by the application.
             // This process of turning incoming claims into application specific logic is called
             // "claims transformation"
-            // OIDC middleware has a "notification" that you can do claims transformation -
+            // OIDC middleware has a "notification" (SecurityTokenValidated) where you can do claims transformation -
             // the resulting claims will be stored in acookie
             //4. The example had UseTokenLifetime = false - dont know what it does yet.
+            // see here -https://github.com/IdentityServer/IdentityServer3/issues/1653
+            //5. If we want to do redirect when logging out, handle the RedirectToIdentityProvider notification
+            // and make sure the token will be passed along.
             app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
             {
                 Authority = "https://localhost:44370/identity",
@@ -84,8 +98,13 @@ namespace PracticeIdentitityServer3_1
 
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,
+
+                //OpenIdConnectAuthenticationNotifications specifies events which the
+                //OpenIdConnectAuthenticationMiddleware invokes to enable developer control over the authentication process
+                //Handlers for these events are set-up via the notifcations property
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
+                    //Invoked after the security token has passed validation and a ClaimsIdentity has been generated.
                     SecurityTokenValidated = n =>
                     {
                         var id = n.AuthenticationTicket.Identity;
@@ -107,13 +126,33 @@ namespace PracticeIdentitityServer3_1
                         nid.AddClaim(sub);
                         nid.AddClaims(roles);
 
-                        // add some other app specific claim
+                        // add some other app specific claim (just for example)
                         nid.AddClaim(new Claim("app_specific", "some data"));
 
-                        n.AuthenticationTicket = new AuthenticationTicket(
-                            nid,
-                            n.AuthenticationTicket.Properties);
+                        //on logging out we may wish to rediect the user some where.
+                        //Client has to prove identity at logout endpoint to ensure we redirect ot correct url (an not spam or phishing site)
+                        // Ican;t quite see the use case where this validation is necessary but ho hum...
+                        //This is done by sending the initial identity token we received during authentication process.
+                        //The following line stops this being completely discarded by claims transformation logic:
+                        //keep id_token for logout (id-token is retained in its JWT format)
+                        nid.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
 
+                        n.AuthenticationTicket = new AuthenticationTicket(
+                          nid,
+                          n.AuthenticationTicket.Properties);
+                        return Task.FromResult(0);
+                    },
+
+                    
+                    //Invoked to manipulate redirects to the identity provider for SignIn, SignOut, or Challenge.
+                    RedirectToIdentityProvider = n=>
+                    {
+                        if (n.ProtocolMessage.RequestType == OpenIdConnectRequestType.LogoutRequest) {
+                            var idTokenHint = n.OwinContext.Authentication.User.FindFirst("id_token");
+                            if (idTokenHint != null) {
+                                n.ProtocolMessage.IdTokenHint = idTokenHint.Value;
+                            }
+                        }
                         return Task.FromResult(0);
                     }
                 }

@@ -1,0 +1,16 @@
+﻿
+@{
+
+    ViewBag.Title = "Forbidden";
+
+}
+
+
+
+<h1>Forbidden</h1>
+
+<p>In order to show behaviour, the UpdateContact page requires ResourceAuthorize values that do not exist.</p>
+<p>The IdentityServer HandleForbidden attribute send requests that fail to authorise (due to a 403) error here.<p/>
+<p>Note the Identity Server tutorial doesn't make it absolutely clear this page needs to be created - 
+    at first I thought it was a page embedded in the IdentityServer dll. Compare with the Logout functionality, which does
+    have html embedded somewhere in IdentityServer3 core.</p>

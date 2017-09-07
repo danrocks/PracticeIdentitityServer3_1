@@ -24,13 +24,21 @@
     </div>
     <div class="col-md-4">
         <h2>RAMMFAR</h2>
-        <p>There are constant reminders to set-up RAMMFAR properly. If itsd not included lots of stuff goes tit up. e.g. IdentityServer has it's own
+        <p>There are constant reminders to set-up RAMMFAR properly. If its not included lots of stuff goes tit up. e.g. IdentityServer has it's own
         Login functionality - it won't work without RAMMFAR.
         </p>
     </div>
     <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+        <h2>Unusual Set-up</h2>
+        <p>
+            Normally, the OpenConnectId Provider aka Authentication Server aka Identity Server 3 would be running as a standalone service/website.
+            The website/client using it would be on a completely different uri.
+        </p>
+        <p>
+            In this example the calling (Test-MVC) application is in the same assembly. One way to notice this is that the page header
+            changes to say "Embedded IdentityServer" (the IdentityServer site name) UI is provided (natively) by IdentityServer3.
+            Specifically this happens when logging in or out. Another visible change is the url contains /identity when running this fucntionality - 
+            /Identity is mapped on IAppBuilder to be use IdentityServer3 to process requests.
+        </p>
+</div>
 </div>

@@ -46,5 +46,41 @@ namespace PracticeIdentitityServer3_1.Controllers
 
             return View();
         }
+
+        [ResourceAuthorize("Write","ContactDetails")]
+        [HandleForbidden]
+        public ActionResult UpdateContact() {
+            ViewBag.Message = "Update your contact details! an action reuiring unavailable permissions";
+
+            return View();
+        }
+
+        //as alternative to above, could use the AuthorizationManager imperatively
+        // which gives a fe more design possibilities
+        //[HandleForbidden]
+        //public ActionResult UpdateContact()
+        //{
+        //    if (!HttpContext.CheckAccess("Write", "ContactDetails", "some more data"))
+        //    {
+        //        // either 401 or 403 based on authentication state
+        //        return this.AccessDenied();
+        //    }
+        //    ViewBag.Message = "Update your contact details!";
+        //    return View();
+        //}
+
+
+        /// <summary>
+        /// Adding a logout is asimple as adding a call to Katana AuthenticationManager's
+        /// SignOutMethod.
+        /// This initiates a roundtrip to IdentityServer's endsession endpoit.
+        /// This clears the authentication cookie and clears the sesion
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Logout() {
+            Request.GetOwinContext().Authentication.SignOut();
+            return Redirect("/");
+        }
+
     }
 }
