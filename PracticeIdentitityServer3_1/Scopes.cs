@@ -10,13 +10,13 @@ namespace PracticeIdentitityServer3_1
     {
         public static IEnumerable<Scope> Get()
         {
-            List <Scope> scopes = new List<Scope> {
-            StandardScopes.OpenId,
-            StandardScopes.Profile,
-            StandardScopes.Email,
-            StandardScopes.Roles,
-            StandardScopes.OfflineAccess
-        };
+            List<Scope> scopes = new List<Scope> {
+                StandardScopes.OpenId,
+                StandardScopes.Profile,
+                StandardScopes.Email,
+                StandardScopes.Roles,
+                StandardScopes.OfflineAccess
+            };
             scopes.Add(new Scope
             {
                 Enabled = true,
@@ -26,6 +26,15 @@ namespace PracticeIdentitityServer3_1
                 {
                     new ScopeClaim("role")
                 }
+            });
+            //added the following to support Api project
+            scopes.Add(new Scope
+            {
+                Enabled = true,
+                Name = "sampleApi",
+                DisplayName="Sample API",
+                Type = ScopeType.Resource,
+                Description="Access to sample Api"
             });
 
             scopes.AddRange(StandardScopes.All);
