@@ -9,8 +9,9 @@ using System.Web.Http;
 namespace Api
 {
     /// <summary>
-    /// Return all claims back to the caller - allows inspection of 
-    /// the token supplied to the api
+    /// Return all claims back to the caller. This
+    /// 1. provides a simple test of the Api project
+    /// 2. Aallows inspection of the token supplied to the api
     /// </summary>
     [Route("Identity")]
     [Authorize]

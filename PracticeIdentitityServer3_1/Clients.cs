@@ -26,7 +26,7 @@ namespace PracticeIdentitityServer3_1
                     },
 
                     //the following is set-up inorder that a user will be redirected to 
-                    // a particular site .e.g the homepage on logging out.
+                    // a particular site e.g. the homepage on logging out.
                     // To make this redirection work, further enhancments must also be made on the 
                     // handling of notifications in th OpenIdConnectAuthenticationOptions (se startup.cs).
                     // The default IdentityServer3 implementation simply provides a link to the login page on 
@@ -49,9 +49,9 @@ namespace PracticeIdentitityServer3_1
                     }
                 },
                 new Client {
-                    //if calling WebApi might use client credentials(eg service accout) or by delegating users identity.
-                    // here we are using client credentials.
-                    // For security IdentityServer3 only allows one flow per client...since existing MVC client (above) alreay uses
+                    //When calling WebApi, we could use client credentials(eg service accout) or by delegating users identity.
+                    // Here we are using client credentials.
+                    // For security IdentityServer3 only allows one flow per client...since existing MVC client (above) already uses
                     // implcit flow, we need to create this client for service to service communication
                     ClientName = "MVC Client (service communication)",
                     ClientId= "mvc_service",
@@ -60,8 +60,11 @@ namespace PracticeIdentitityServer3_1
                     ClientSecrets = new List<Secret> {
                             new Secret("secret".Sha256())
                     },
+                    // Lock down the scopes that can be accessed by the various clients.
+                    // Nb You could list anything here = Scope "cripes" does not exist.
+                    // Made-up scopes appear to bne sliently stripped though.
                     AllowedScopes = new List<string> {
-                            "sampleApi"
+                            "sampleApi","cripes"
                     }
                 }          
             };

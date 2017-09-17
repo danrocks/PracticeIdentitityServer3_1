@@ -8,6 +8,8 @@ namespace PracticeIdentitityServer3_1
 {
     public static class Scopes
     {
+
+        
         public static IEnumerable<Scope> Get()
         {
             List<Scope> scopes = new List<Scope> {

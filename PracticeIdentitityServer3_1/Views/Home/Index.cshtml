@@ -18,14 +18,15 @@
     <div class="col-md-4">
         <h2>Getting started</h2>
         <p>
-        You can navigate to the discovery endpoint
+            You can navigate to the discovery endpoint
         </p>
         <p><a class="btn btn-default" href="https://localhost:44370/identity/.well-known/openid-configuration">https://localhost:44370/identity/.well-known/openid-configuration</a></p>
     </div>
     <div class="col-md-4">
         <h2>RAMMFAR</h2>
-        <p>There are constant reminders to set-up RAMMFAR properly. If its not included lots of stuff goes tit up. e.g. IdentityServer has it's own
-        Login functionality - it won't work without RAMMFAR.
+        <p>
+            There are constant reminders to set-up RAMMFAR properly. If its not included lots of stuff goes tit up. e.g. IdentityServer has it's own
+            Login functionality - it won't work without RAMMFAR.
         </p>
     </div>
     <div class="col-md-4">
@@ -37,8 +38,11 @@
         <p>
             In this example the calling (Test-MVC) application is in the same assembly. One way to notice this is that the page header
             changes to say "Embedded IdentityServer" (the IdentityServer site name) UI is provided (natively) by IdentityServer3.
-            Specifically this happens when logging in or out. Another visible change is the url contains /identity when running this fucntionality - 
+            Specifically this happens when logging in or out. Another visible change is the url contains /identity when running this fucntionality -
             /Identity is mapped on IAppBuilder to be use IdentityServer3 to process requests.
         </p>
-</div>
-</div>
+    </div>
+    <div class="row">
+        <a class="btn btn-default" href="https://localhost:44370/callapi/clientcredentials">Use client credentials when invoking a web Api</a>
+
+        </div>

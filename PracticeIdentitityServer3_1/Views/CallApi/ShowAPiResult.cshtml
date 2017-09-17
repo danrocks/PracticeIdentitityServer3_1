@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "ShowApiResult";
+}
+
+<h2>ApiResult</h2>
+
+<pre>@ViewBag.Json</pre>
+
+<p>
+    The Identity controller invoked in order to construct this page simply parses and returns the claims given to it in the token provided by the caller.
+</p>
+<p>
+    So the json above shows what the Api know anbout the caller:
+</p>
+<ul>
+    <li>the issuer name, audience and expiration (used by token validation middleware)</li>
+    <li>the scope for which the token was issued (used by the scope validation middleware)</li>
+    <li>the client id</li>
+</ul>
+<p>
+    All claims in a token are turned into a ClaimsPrincipal and are avaialble via the .User property on the controller (which is how we get to see them here).
+</p>

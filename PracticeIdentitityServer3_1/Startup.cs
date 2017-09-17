@@ -23,6 +23,13 @@ namespace PracticeIdentitityServer3_1
 {
     public class Startup
     {
+        /// <summary>
+        /// This project is serving as two things:
+        /// 1. An MVC application to show how IdentityServer3 might be used
+        /// 2. An Oauth2 Identity Provider (in this case an IdentityServer3 instance)
+        /// This configuration section sets-up the IdentityServer3 system.
+        /// </summary>
+        /// <param name="app"></param>
         public void Configuration(IAppBuilder app)
         {
             // Adjust the configuration for anti-CSRF protection to the new unique sub claim type
@@ -74,9 +81,9 @@ namespace PracticeIdentitityServer3_1
 
             //1. ResponseType = "id_token" equates to standard OAuth2 implicit flow 
             //2. By default the OIDC middleware asks for two scopes: openid and profile - 
-            // this is why IdentityServer includes the subject and name claims. 
-            // added a request to the roles scope - it will be shown on the ABout page (which is programmed to show all scopes).
-            // A browser restart maybe required  the new roles will not be in a previously created token.
+            // this is why IdentityServer includes (bt default) the subject and name claims. 
+            // In this case, we add a the "roles" scope - it will be shown on the About page (which is set to display all available scopes).
+            // A browser restart maybe required the new roles will not be in a previously created token.
             //3. The arriving token will contain low level protocol claims not reuired by the business logic.
             // You may take the incoming claims, decide which claims you want to keep and maybe need to contact additional 
             // data stores to retrieve more claims that are required by the application.
@@ -92,16 +99,28 @@ namespace PracticeIdentitityServer3_1
             {
                 Authority = "https://localhost:44370/identity",
                 ClientId = "mvc",
-                Scope = "openid profile roles",
                 RedirectUri = "https://localhost:44370/",
+                // For the bulk of tutorial the follinw set-up was required
                 ResponseType = "id_token",
+                Scope = "openid profile roles",                
+
+
+                // For section "Calling the API on behalf of the User" , changes are required.
+                // 1. Use hybrid flow = "id_token token". Nb if response type of token is reuested, IdentityServerstops including claims in the Identity token.
+                //     This is an optimisation: since there will now be an access token that allows claims to be retreived form the userinfo endpoint,
+                //      keeping it in identity token would be superflous
+                // 2. If a token associated with the User is going to be used to access (authenticate and authorise) the Api,
+                //      the user will require access to the correct scope.
+                //ResponseType = "id_token token",
+                //Scope = "openid profile roles sampleApi",
+                
 
                 SignInAsAuthenticationType = "Cookies",
                 UseTokenLifetime = false,
 
-                //OpenIdConnectAuthenticationNotifications specifies events which the
-                //OpenIdConnectAuthenticationMiddleware invokes to enable developer control over the authentication process
-                //Handlers for these events are set-up via the notifcations property
+                // OpenIdConnectAuthenticationNotifications specifies events which the
+                // OpenIdConnectAuthenticationMiddleware invokes to enable developer control over the authentication process
+                // Handlers for these events are set-up via the notifcations property
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
                     //Invoked after the security token has passed validation and a ClaimsIdentity has been generated.
@@ -129,7 +148,7 @@ namespace PracticeIdentitityServer3_1
                         // add some other app specific claim (just for example)
                         nid.AddClaim(new Claim("app_specific", "some data"));
 
-                        //on logging out we may wish to rediect the user some where.
+                        //on logging out we may wish to redirect the user some where.
                         //Client has to prove identity at logout endpoint to ensure we redirect ot correct url (an not spam or phishing site)
                         // Ican;t quite see the use case where this validation is necessary but ho hum...
                         //This is done by sending the initial identity token we received during authentication process.
